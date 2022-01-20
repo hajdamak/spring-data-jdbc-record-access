@@ -52,7 +52,6 @@ public class App {
 
         System.out.println("Loading record ...");
         final var a3 = repo.findById(a2.id());
-        a1.name();
     }
 
 }
