@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: hjdmk
+      changes:
+        - createTable:
+            tableName: account
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints: { primaryKey: true, primaryKeyName: account_pk }
+              - column: { name: version, type: int }
+              - column: { name: name, type: varchar(255) }
