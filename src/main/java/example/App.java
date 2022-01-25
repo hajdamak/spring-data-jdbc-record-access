@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.repository.CrudRepository;
@@ -12,19 +13,30 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+@AccessType(AccessType.Type.PROPERTY)
+interface Table {}
+
 record Account(
         @Id String id,
         @Version int version,
         String name
-) {
+) implements Table {
     public Account {
         System.out.println("Constructor is accessed: (" + id + ", " + version + ", " + name + ")");
         if (id == null) id = UUID.randomUUID().toString();
     }
 
     public String name() {
-        System.out.println("Field is accessed.");
+        System.out.println("Name is accessed " + name);
         return name;
+    }
+    public int version() {
+        System.out.println("Version is accessed " + version);
+        return version;
+    }
+    public String id() {
+        System.out.println("Id is accessed " + id);
+        return id;
     }
 }
 
@@ -46,8 +58,10 @@ public class App {
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
 
-        System.out.println("Saving record ...");
+        System.out.println("Creating ...");
         final var a1 = new Account(null, 0, "test");
+
+        System.out.println("Saving ...");
         final var a2 = repo.save(a1);
 
         System.out.println("Loading record ...");
